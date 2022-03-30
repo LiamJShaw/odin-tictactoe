@@ -1,18 +1,33 @@
 // Game module
-const game = () => {
+const game = (() => {
 
     // Generate players
     // Take in custom name eventually
-    const playerOne = playerFactory("Player 1", "X");
-    const playerTwo = playerFactory("Player 2", "O");
+    const playerOne = {name: "Player 1", choice: "X"};
+    const playerTwo = {name: "Player 2", choice: "O"};
+
+    let whoseTurn = playerOne;
+
+    // const nextTurn = () => {
+    //     if (whoseTurn === playerOne) {
+    //         whoseTurn = playerTwo;
+    //     } else {
+    //         whoseTurn = playerOne;
+    //     }
+    // }
     
     const start = () => {
         console.log("Game started")
 
     };
 
-    return { start };
-};
+    return { start,
+            whoseTurn,
+            // nextTurn,
+            playerOne,
+            playerTwo
+            };
+})();
 
 // Gameboard module
 const gameBoard = (() => {
@@ -40,16 +55,28 @@ const gameBoard = (() => {
         const tiles = document.querySelectorAll(".tile");
 
         tiles.forEach((tile) => {
-            tile.addEventListener('click', () => {
-                tile.textContent = "X";
+            tile.addEventListener('click', (e) => {
+                tileClicked(e.target.getAttribute("data-index"));
             })
         })
     }
 
     const tileClicked = (index) => {
-        if (gameBoardArray[index] !== '') {
 
-        }
+        console.log(game.whoseTurn.choice)
+
+        // if (gameBoardArray[index] !== '') {
+            
+            if (game.whoseTurn == game.playerOne) {
+                gameBoardArray[index] = game.playerOne.choice;
+                console.log("Player 1 played");
+                game.whoseTurn = game.playerTwo;
+            } else {
+                console.log("Player 2 played");
+                game.whoseTurn = game.playerOne;
+            }
+            
+        // }
     }
 
     const updateBoard = () => {
@@ -67,9 +94,9 @@ const gameBoard = (() => {
 // Gameboard array
 
 // Player object factory
-const playerFactory = (name, choice) => {
+const playerFactory = ((name, choice) => {
     return { name, choice };
-}
+})();
 
 gameBoard.gameBoardArray[3] = "X";
 gameBoard.updateBoard();

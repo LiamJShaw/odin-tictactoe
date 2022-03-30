@@ -38,7 +38,11 @@ main {
     justify-content: center;
     align-items: center;
 
-    background-color: #00000099;
+    /* background: rgb(0,0,0);
+    background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(27,27,27,1) 35%, rgba(18,18,18,1) 100%);  */
+
+    background: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(0,0,0,1) 13%, rgba(31,31,31,1) 100%); 
 }
 
 .container {
@@ -69,7 +73,7 @@ main {
 
 .playerOne,
 .playerTwo {
-    background-color: black;
+    background-color: rgba(255, 255, 255, 0.068);
     /* margin: 1rem; */
 }
 
