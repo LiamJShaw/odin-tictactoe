@@ -41,8 +41,14 @@ main {
     /* background: rgb(0,0,0);
     background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(27,27,27,1) 35%, rgba(18,18,18,1) 100%);  */
 
+    /* background: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(0,0,0,1) 13%, rgba(31,31,31,1) 100%);  */
+
+    /* background: rgb(0,0,0); */
+    /* background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(89,89,89,1) 40%, rgba(0,0,0,1) 100%);   */
+
     background: rgb(0,0,0);
-    background: linear-gradient(180deg, rgba(0,0,0,1) 13%, rgba(31,31,31,1) 100%); 
+    background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(23,23,23,1) 100%); 
 }
 
 .container {
@@ -115,7 +121,7 @@ main {
 
     margin: 4rem;
 
-    background-color: rgba(0, 0, 0, 0.287);
+    background-color: rgba(255, 255, 255, 0.075);
     gap: 2px;
 
     box-shadow: rgba(144, 144, 144, 0.2) 0px 8px 24px;

@@ -1,37 +1,12 @@
-// Game module
-const game = (() => {
-
-    // Generate players
-    // Take in custom name eventually
-    const playerOne = {name: "Player 1", choice: "X"};
-    const playerTwo = {name: "Player 2", choice: "O"};
-
-    let whoseTurn = playerOne;
-
-    // const nextTurn = () => {
-    //     if (whoseTurn === playerOne) {
-    //         whoseTurn = playerTwo;
-    //     } else {
-    //         whoseTurn = playerOne;
-    //     }
-    // }
-    
-    const start = () => {
-        console.log("Game started")
-
-    };
-
-    return { start,
-            whoseTurn,
-            // nextTurn,
-            playerOne,
-            playerTwo
-            };
-})();
+// Player object factory
+const playerFactory = (name, choice) => {
+    return { name, choice };
+};
 
 // Gameboard module
 const gameBoard = (() => {
 
+    let tiles;
     const gameBoardArray = ['', '', '',
                             '', '', '',
                             '', '', '',];
@@ -52,7 +27,7 @@ const gameBoard = (() => {
         }
 
         // Add event listeners to tiles
-        const tiles = document.querySelectorAll(".tile");
+        tiles = document.querySelectorAll(".tile");
 
         tiles.forEach((tile) => {
             tile.addEventListener('click', (e) => {
@@ -63,42 +38,64 @@ const gameBoard = (() => {
 
     const tileClicked = (index) => {
 
-        console.log(game.whoseTurn.choice)
-
         // if (gameBoardArray[index] !== '') {
             
-            if (game.whoseTurn == game.playerOne) {
-                gameBoardArray[index] = game.playerOne.choice;
-                console.log("Player 1 played");
-                game.whoseTurn = game.playerTwo;
-            } else {
-                console.log("Player 2 played");
-                game.whoseTurn = game.playerOne;
-            }
+            updateBoard(index, game.whoseTurn)
+            game.nextTurn();
             
         // }
     }
 
-    const updateBoard = () => {
-        console.log(gameBoardArray)
+    const updateBoard = (index, player) => {
+        
+        // Update backend
+        gameBoardArray[index] = player.choice;
+
+        // Update UI
+        const tile = document.querySelector(`[data-index="${index}"]`);
+        tile.textContent = player.choice;
     }
 
     return {
-        gameBoardArray,
-        newBoard,
-        updateBoard
+        newBoard
     }
 
 })();
 
-// Gameboard array
+// Game module
+const game = (() => {
 
-// Player object factory
-const playerFactory = ((name, choice) => {
-    return { name, choice };
+    // Generate players
+    // Take in custom name eventually
+    const playerOne = playerFactory("Player 1", "x");
+    const playerTwo = playerFactory("Player 2", "O");
+
+    let whoseTurn = playerOne;
+
+    const nextTurn = () => {
+
+        console.log(whoseTurn);
+
+        if (whoseTurn == playerTwo) {
+            whoseTurn = playerOne ;
+        } else {
+            whoseTurn = playerTwo;
+        }
+
+        whoseTurn = playerTwo;
+    }
+    
+    const start = () => {
+        console.log("Game started")
+
+    };
+
+    return { start,
+            whoseTurn,
+            nextTurn,
+            playerOne,
+            playerTwo
+            };
 })();
-
-gameBoard.gameBoardArray[3] = "X";
-gameBoard.updateBoard();
 
 gameBoard.newBoard();
