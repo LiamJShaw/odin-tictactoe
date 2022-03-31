@@ -1,6 +1,6 @@
 // Player object factory
-const playerFactory = (name, choice) => {
-    return { name, choice };
+const playerFactory = (name, choice, turn) => {
+    return { name, choice, turn};
 };
 
 // Gameboard module
@@ -38,16 +38,9 @@ const gameBoard = (() => {
 
     const tileClicked = (index) => {
 
-        if (gameBoardArray[index] == '') {
-
-                   
-            updateBoard(index, game.whoseTurn.choice)
-
-            console.log(game.whoseTurn);
-
+        if (gameBoardArray[index] == '') {    
+            updateBoard(index, game.whoseTurn().choice)
             game.nextTurn();
-            
-            console.log(game.whoseTurn);
         }
     }
 
@@ -72,28 +65,31 @@ const game = (() => {
 
     // Generate players
     // Take in custom name eventually
-    const playerOne = playerFactory("Player 1", "x");
-    const playerTwo = playerFactory("Player 2", "O");
-
-    // Store it on the players instead? Run out of time tonight.
-    let whoseTurn = playerOne;
+    // Currently sets playerOne's turn to true but will randomise/coin flip eventually
+    const playerOne = playerFactory("Player 1", "x", true);
+    const playerTwo = playerFactory("Player 2", "O", false);
 
     const newGame = () => {
         gameBoard.newBoard();
-        whoseTurn = playerOne;
+    }
+
+    const whoseTurn = () => {
+        if (playerOne.turn === true) {
+            return playerOne;
+        } else {
+            return playerTwo;
+        }
     }
 
     const nextTurn = () => {
 
-        // if (whoseTurn == playerOne) {
-        //     whoseTurn = playerTwo;
-        // } else {
-        //     whoseTurn = playerOne;
-        // }
-    
-        // console.log(whoseTurn);
-    
-        whoseTurn = playerTwo;
+        if (playerOne.turn === true) {
+            playerOne.turn = false;
+            playerTwo.turn = true;
+        } else {
+            playerOne.turn = true;
+            playerTwo.turn = false;
+        }
     }
     
     return {
