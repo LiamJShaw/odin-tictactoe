@@ -38,22 +38,27 @@ const gameBoard = (() => {
 
     const tileClicked = (index) => {
 
-        // if (gameBoardArray[index] !== '') {
-            
-            updateBoard(index, game.whoseTurn)
+        if (gameBoardArray[index] == '') {
+
+                   
+            updateBoard(index, game.whoseTurn.choice)
+
+            console.log(game.whoseTurn);
+
             game.nextTurn();
             
-        // }
+            console.log(game.whoseTurn);
+        }
     }
 
-    const updateBoard = (index, player) => {
+    const updateBoard = (index, char) => {
         
         // Update backend
-        gameBoardArray[index] = player.choice;
+        gameBoardArray[index] = char;
 
         // Update UI
         const tile = document.querySelector(`[data-index="${index}"]`);
-        tile.textContent = player.choice;
+        tile.textContent = char;
     }
 
     return {
@@ -70,32 +75,39 @@ const game = (() => {
     const playerOne = playerFactory("Player 1", "x");
     const playerTwo = playerFactory("Player 2", "O");
 
+    // Store it on the players instead? Run out of time tonight.
     let whoseTurn = playerOne;
+
+    const newGame = () => {
+        gameBoard.newBoard();
+        whoseTurn = playerOne;
+    }
 
     const nextTurn = () => {
 
-        console.log(whoseTurn);
-
-        if (whoseTurn == playerTwo) {
-            whoseTurn = playerOne ;
-        } else {
-            whoseTurn = playerTwo;
-        }
-
+        // if (whoseTurn == playerOne) {
+        //     whoseTurn = playerTwo;
+        // } else {
+        //     whoseTurn = playerOne;
+        // }
+    
+        // console.log(whoseTurn);
+    
         whoseTurn = playerTwo;
     }
     
-    const start = () => {
-        console.log("Game started")
-
-    };
-
-    return { start,
+    return {
             whoseTurn,
+            newGame,
             nextTurn,
             playerOne,
             playerTwo
             };
 })();
 
-gameBoard.newBoard();
+const newGameButton = document.querySelector(".newGame");
+
+newGameButton.addEventListener("click", () => {
+    game.newGame();
+    newGameButton.style.display = "none";
+})
