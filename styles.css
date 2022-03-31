@@ -70,6 +70,8 @@ main {
     padding: 0.5rem 1.5rem;
     background-color: #111111;
     color: white;
+    font-weight: 900;
+    font-size: large;
     border-style: solid;
     border-radius: 10px;
 }

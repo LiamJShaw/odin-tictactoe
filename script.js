@@ -40,7 +40,16 @@ const gameBoard = (() => {
 
         if (gameBoardArray[index] == '') {    
             updateBoard(index, game.whoseTurn().choice)
-            game.nextTurn();
+
+            const boardState = checkBoardState();
+            
+            if (boardState === "win") {
+                console.log(`${game.whoseTurn().name} wins!`);
+            } else if (boardState === "draw") {
+                console.log("Draw!");
+            } else {
+                game.nextTurn();
+            }
         }
     }
 
@@ -54,7 +63,55 @@ const gameBoard = (() => {
         tile.textContent = char;
     }
 
+    const checkBoardState = () => {
+        const winStates = [
+            [0,1,2],
+            [0,3,6],
+            [0,4,8],
+            [1,4,7],
+            [3,4,5],
+            [6,7,8],
+            [2,5,8],
+            [2,4,6],
+        ];
+
+        const results = [];
+
+        winStates.forEach((state) => {
+
+            if (gameBoardArray[state[0]] && 
+                gameBoardArray[state[1]] && 
+                gameBoardArray[state[2]]) {
+
+                    if (gameBoardArray[state[0]] === gameBoardArray[state[1]]) {
+                        if (gameBoardArray[state[0]] === gameBoardArray[state[2]]) {
+                            console.log("Win!");
+                            results.push(true);
+                            return;
+                        };
+                    };
+
+                    results.push(false);
+            }            
+        })
+
+        // Draw
+        if (!(gameBoardArray.includes(''))) {
+            if (!(results.includes(true))) {
+                return "draw"
+            } 
+        }
+
+        if (results.includes(true)) {
+            return "win";
+        }
+        
+        // Does the code ever get here?
+        return false;
+    }
+
     return {
+        checkBoardState,
         newBoard
     }
 
