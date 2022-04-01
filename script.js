@@ -1,12 +1,57 @@
+// Display Controller
+const displayController = (() => {
+
+
+    const newGameButton = document.querySelector(".newGame");
+
+    newGameButton.addEventListener("click", () => {
+        game.newGame();
+        newGameButton.style.display = "none";
+    })
+
+    const updateScores = () => {
+
+        const playerOneScoreUI = document.querySelector(".playerOneScore");
+        playerOneScoreUI.textContent = game.playerOne.score;
+
+        const playerTwoScoreUI = document.querySelector(".playerTwoScore");
+        playerTwoScoreUI.textContent = game.playerTwo.score;
+    
+    
+        playerOneScoreUI.style.display = "block";
+        playerTwoScoreUI.style.display = "block";
+    }
+
+    const updateResult = () => {
+        let resultContainer = document.querySelector(".result");
+        resultContainer.textContent = `${game.whoseTurn().name} wins!`;
+    }
+
+    return { 
+        updateResult,
+        updateScores,
+    }
+
+})();
+
 // Player object factory
 const playerFactory = (name, choice, turn) => {
-    return { name, choice, turn};
+
+    let score;
+
+    const updateScore = () => {
+        if (turn === true) {
+            score = score + 1;
+        }
+    }
+
+    return { name, choice, turn, score, updateScore};
 };
 
 // Gameboard module
 const gameBoard = (() => {
 
-    let resultContainer = document.querySelector(".result");
+    
     let tiles;
     const gameBoardArray = ['', '', '',
                             '', '', '',
@@ -15,8 +60,6 @@ const gameBoard = (() => {
     const newBoard = () => {
         const gameBoardUI = document.getElementById("gameBoard");
         gameBoardUI.innerHTML = "";
-        resultContainer.textContent = "";
-
 
         for (let i = 0; i < 9; i++) {
             const tile = document.createElement("div");
@@ -45,9 +88,13 @@ const gameBoard = (() => {
             const boardState = checkBoardState(index);
             
             if (boardState === "win") {
-                resultContainer.textContent = `${game.whoseTurn().name} wins!`;
+                game.updateScores();
+                displayController.updateResult();
+                displayController.updateScores();
+
             } else if (boardState === "draw") {
-                resultContainer.textContent = "Draw!";
+                displayController.updateResult("draw");
+
             } else {
                 game.nextTurn();
             }
@@ -131,10 +178,13 @@ const gameBoard = (() => {
 const game = (() => {
 
     // Generate players
-    // Take in custom name eventually
-    // Currently sets playerOne's turn to true but will randomise/coin flip eventually
+
+    // TODO: Take in custom name
+    // TODO: Currently sets playerOne's turn to true but randomise/coin flip eventually
+    
     const playerOne = playerFactory("Player 1", "x", true);
     const playerTwo = playerFactory("Player 2", "O", false);
+    
 
     const newGame = () => {
         gameBoard.newBoard();
@@ -158,21 +208,18 @@ const game = (() => {
             playerTwo.turn = false;
         }
     }
+
+    const updateScores = () => {
+        playerOne.updateScore();
+        playerTwo.updateScore();
+    }
     
     return {
-            whoseTurn,
-            newGame,
-            nextTurn,
             playerOne,
-            playerTwo
+            playerTwo,
+            newGame,
+            whoseTurn,
+            nextTurn,
+            updateScores
             };
 })();
-
-
-
-const newGameButton = document.querySelector(".newGame");
-
-newGameButton.addEventListener("click", () => {
-    game.newGame();
-    newGameButton.style.display = "none";
-})

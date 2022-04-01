@@ -83,6 +83,8 @@ main {
     
     margin: 0.5rem;
     padding-top: 1rem;
+
+    min-height: 5rem;
 }
 
 .container .results .result {
@@ -99,6 +101,8 @@ main {
     gap: 1rem;
 
     color: whitesmoke;
+
+    max-width: 80%;
     
 }
 
@@ -106,6 +110,7 @@ main {
 .playerTwo {
     background-color: rgba(255, 255, 255, 0.068);
     /* margin: 1rem; */
+    max-width: 60%;
 }
 
 .playerOneName,
@@ -119,6 +124,9 @@ main {
     margin: 0.5rem;
     
     text-align: center;
+
+    max-width: 90%;
+
 }
 
 .playerOneName:focus,
@@ -132,6 +140,7 @@ main {
     font-size: large;
     font-weight: 700;
     margin: 1rem;
+    display: none;
 }
 
 /* Game */
