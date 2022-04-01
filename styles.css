@@ -76,6 +76,20 @@ main {
     border-radius: 10px;
 }
 
+.container .results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    margin: 0.5rem;
+    padding-top: 1rem;
+}
+
+.container .results .result {
+    font-size: x-large;
+}
+
+
 /* Player Info Box */
 
 .playerInfo {

@@ -6,16 +6,17 @@ const playerFactory = (name, choice, turn) => {
 // Gameboard module
 const gameBoard = (() => {
 
+    let resultContainer = document.querySelector(".result");
     let tiles;
     const gameBoardArray = ['', '', '',
                             '', '', '',
                             '', '', '',];
 
     const newBoard = () => {
-        // create 9 squares
-
         const gameBoardUI = document.getElementById("gameBoard");
         gameBoardUI.innerHTML = "";
+        resultContainer.textContent = "";
+
 
         for (let i = 0; i < 9; i++) {
             const tile = document.createElement("div");
@@ -41,12 +42,12 @@ const gameBoard = (() => {
         if (gameBoardArray[index] == '') {    
             updateBoard(index, game.whoseTurn().choice)
 
-            const boardState = checkBoardState();
+            const boardState = checkBoardState(index);
             
             if (boardState === "win") {
-                console.log(`${game.whoseTurn().name} wins!`);
+                resultContainer.textContent = `${game.whoseTurn().name} wins!`;
             } else if (boardState === "draw") {
-                console.log("Draw!");
+                resultContainer.textContent = "Draw!";
             } else {
                 game.nextTurn();
             }
@@ -63,7 +64,8 @@ const gameBoard = (() => {
         tile.textContent = char;
     }
 
-    const checkBoardState = () => {
+    const checkBoardState = (tileChanged) => {
+
         const winStates = [
             [0,1,2],
             [0,3,6],
@@ -75,9 +77,15 @@ const gameBoard = (() => {
             [2,4,6],
         ];
 
+
+        var startTime = performance.now();
+
+        // Just the states that involve the index that was just changed
+        const possibleWinStates = winStates.filter(state => state.includes(parseInt(tileChanged)));
+
         const results = [];
 
-        winStates.forEach((state) => {
+        possibleWinStates.forEach((state) => {
 
             if (gameBoardArray[state[0]] && 
                 gameBoardArray[state[1]] && 
@@ -85,7 +93,6 @@ const gameBoard = (() => {
 
                     if (gameBoardArray[state[0]] === gameBoardArray[state[1]]) {
                         if (gameBoardArray[state[0]] === gameBoardArray[state[2]]) {
-                            console.log("Win!");
                             results.push(true);
                             return;
                         };
@@ -95,19 +102,22 @@ const gameBoard = (() => {
             }            
         })
 
-        // Draw
+        var endTime = performance.now()
+
+        console.log(`${endTime - startTime} milliseconds`);
+
+
+        // Check draw
         if (!(gameBoardArray.includes(''))) {
             if (!(results.includes(true))) {
                 return "draw"
             } 
         }
 
+        // Check win
         if (results.includes(true)) {
             return "win";
         }
-        
-        // Does the code ever get here?
-        return false;
     }
 
     return {
@@ -157,6 +167,8 @@ const game = (() => {
             playerTwo
             };
 })();
+
+
 
 const newGameButton = document.querySelector(".newGame");
 
