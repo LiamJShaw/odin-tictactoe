@@ -1,63 +1,88 @@
 // Display Controller
 const displayController = (() => {
 
-
     const newGameButton = document.querySelector(".newGame");
 
     newGameButton.addEventListener("click", () => {
+
         game.newGame();
         newGameButton.style.display = "none";
     })
 
     const updateScores = () => {
-
+        
         const playerOneScoreUI = document.querySelector(".playerOneScore");
-        playerOneScoreUI.textContent = game.playerOne.score;
+        playerOneScoreUI.textContent = game.playerOne.getScore()
 
         const playerTwoScoreUI = document.querySelector(".playerTwoScore");
-        playerTwoScoreUI.textContent = game.playerTwo.score;
-    
+        playerTwoScoreUI.textContent = game.playerTwo.getScore()
     
         playerOneScoreUI.style.display = "block";
         playerTwoScoreUI.style.display = "block";
     }
 
-    const updateResult = () => {
+    const updateResult = (result) => {
         let resultContainer = document.querySelector(".result");
-        resultContainer.textContent = `${game.whoseTurn().name} wins!`;
+
+        switch (result) {
+            case "draw":
+                resultContainer.textContent = "Draw!";
+                break;
+
+            case "win":
+                resultContainer.textContent = `${game.whoseTurn().getName()} wins!`;
+                break;   
+
+            case "clear":
+                resultContainer.textContent = "";
+                break;
+        }
+
+        newGameButton.style.display = "block";
+        
     }
 
     return { 
         updateResult,
-        updateScores,
+        updateScores
     }
 
 })();
 
 // Player object factory
-const playerFactory = (name, choice, turn) => {
-
-    let score;
+const playerFactory = (name, choice, turn, score = 0) => {
 
     const updateScore = () => {
-        if (turn === true) {
-            score = score + 1;
-        }
+        score = score + 1;
     }
 
-    return { name, choice, turn, score, updateScore};
+    const getScore = () => {
+        return score;
+    }
+
+    const updateName = (newName) => {
+        name = newName;
+    }
+
+    const getName = () => {
+        return name;
+    }
+
+    return {choice, turn, getScore, updateScore, updateName, getName};
 };
 
 // Gameboard module
 const gameBoard = (() => {
 
-    
     let tiles;
-    const gameBoardArray = ['', '', '',
-                            '', '', '',
-                            '', '', '',];
+    let gameBoardArray;
 
     const newBoard = () => {
+
+        gameBoardArray = ['', '', '',
+                          '', '', '',
+                          '', '', '',];
+
         const gameBoardUI = document.getElementById("gameBoard");
         gameBoardUI.innerHTML = "";
 
@@ -80,6 +105,15 @@ const gameBoard = (() => {
         })
     }
 
+    // I seem to be unable to remove event listeners without a named callback, so a hack for now
+    const stopTileClicks = () => {
+        for (let i = 0; i < 9; i++) {
+            if (gameBoardArray[i] === '') {
+                gameBoardArray[i] = 'gameEnded'
+            }
+        }
+    }
+
     const tileClicked = (index) => {
 
         if (gameBoardArray[index] == '') {    
@@ -89,7 +123,7 @@ const gameBoard = (() => {
             
             if (boardState === "win") {
                 game.updateScores();
-                displayController.updateResult();
+                displayController.updateResult("win");
                 displayController.updateScores();
 
             } else if (boardState === "draw") {
@@ -124,9 +158,6 @@ const gameBoard = (() => {
             [2,4,6],
         ];
 
-
-        var startTime = performance.now();
-
         // Just the states that involve the index that was just changed
         const possibleWinStates = winStates.filter(state => state.includes(parseInt(tileChanged)));
 
@@ -149,20 +180,17 @@ const gameBoard = (() => {
             }            
         })
 
-        var endTime = performance.now()
-
-        console.log(`${endTime - startTime} milliseconds`);
-
-
         // Check draw
         if (!(gameBoardArray.includes(''))) {
             if (!(results.includes(true))) {
+                stopTileClicks();
                 return "draw"
             } 
         }
 
         // Check win
         if (results.includes(true)) {
+            stopTileClicks();
             return "win";
         }
     }
@@ -178,15 +206,26 @@ const gameBoard = (() => {
 const game = (() => {
 
     // Generate players
-
-    // TODO: Take in custom name
     // TODO: Currently sets playerOne's turn to true but randomise/coin flip eventually
-    
-    const playerOne = playerFactory("Player 1", "x", true);
+
+    const playerOne = playerFactory("Player 1", "X", true);
     const playerTwo = playerFactory("Player 2", "O", false);
-    
 
     const newGame = () => {
+
+        const playerOneNameInput = document.querySelector(".playerOneName");
+        const playerTwoNameInput = document.querySelector(".playerTwoName");
+    
+        if (!(playerOneNameInput.value == "")) { 
+            playerOne.updateName(playerOneNameInput.value);
+        }
+    
+        if (!(playerTwoNameInput.value == "")) { 
+            playerTwo.updateName(playerTwoNameInput.value);
+        }
+    
+        
+        displayController.updateResult("clear");
         gameBoard.newBoard();
     }
 
@@ -210,8 +249,7 @@ const game = (() => {
     }
 
     const updateScores = () => {
-        playerOne.updateScore();
-        playerTwo.updateScore();
+        whoseTurn().updateScore();
     }
     
     return {
