@@ -50,7 +50,9 @@ const displayController = (() => {
 })();
 
 // Player object factory
-const playerFactory = (name, choice, turn, score = 0) => {
+const playerFactory = (name, choice, turn, AI = false) => {
+
+    let score = 0;
 
     const updateScore = () => {
         score = score + 1;
@@ -68,7 +70,25 @@ const playerFactory = (name, choice, turn, score = 0) => {
         return name;
     }
 
-    return {choice, turn, getScore, updateScore, updateName, getName};
+    const setAI = () => {
+        AI = true;
+    }
+
+    const isAI = () => {
+        return AI;
+    }
+
+    console.log("AI: " + AI);
+
+    return {
+        choice,
+        turn,
+        getScore,
+        updateScore,
+        updateName,
+        getName,
+        isAI,
+        setAI};
 };
 
 // Gameboard module
@@ -121,17 +141,19 @@ const gameBoard = (() => {
 
             const boardState = checkBoardState(index);
             
-            if (boardState === "win") {
-                game.updateScores();
-                displayController.updateResult("win");
-                displayController.updateScores();
-
-            } else if (boardState === "draw") {
-                displayController.updateResult("draw");
-
-            } else {
-                game.nextTurn();
+            switch (boardState) {
+                case "win":
+                    game.updateScores();
+                    displayController.updateResult("win");
+                    displayController.updateScores();
+                    break;
+                    
+                case"draw":
+                    displayController.updateResult("draw");
+                    break;
             }
+
+            game.nextTurn();
         }
     }
 
@@ -195,9 +217,28 @@ const gameBoard = (() => {
         }
     }
 
+    const randomLegalMove = () => {
+
+        let count = 0;
+
+        while (count < 9) {
+
+            count++;
+            
+            let randomNumber = Math.floor(Math.random() * 9);
+
+            if (gameBoardArray[randomNumber] === "") {
+                tileClicked(randomNumber);
+                return;
+            }
+        }
+        
+    }
+
     return {
         checkBoardState,
-        newBoard
+        newBoard,
+        randomLegalMove
     }
 
 })();
@@ -209,7 +250,7 @@ const game = (() => {
     // TODO: Currently sets playerOne's turn to true but randomise/coin flip eventually
 
     const playerOne = playerFactory("Player 1", "X", true);
-    const playerTwo = playerFactory("Player 2", "O", false);
+    const playerTwo = playerFactory("Player 2", "O", false, true);
 
     const newGame = () => {
 
@@ -220,8 +261,10 @@ const game = (() => {
             playerOne.updateName(playerOneNameInput.value);
         }
     
-        if (!(playerTwoNameInput.value == "")) { 
+        if (!(playerTwoNameInput.value === "")) { 
             playerTwo.updateName(playerTwoNameInput.value);
+        } else if (playerTwoNameInput.value === "ai") {
+            playerTwo.setAI();
         }
     
         
@@ -238,18 +281,29 @@ const game = (() => {
     }
 
     const nextTurn = () => {
-
         if (playerOne.turn === true) {
             playerOne.turn = false;
             playerTwo.turn = true;
+
+            if (playerTwo.isAI()) {
+                computerTurn();
+                playerOne.turn = true;
+                }
+
         } else {
             playerOne.turn = true;
-            playerTwo.turn = false;
+            playerTwo.turn = false;    
         }
     }
 
     const updateScores = () => {
         whoseTurn().updateScore();
+    }
+
+    const computerTurn = () => {
+        console.log("turn");
+
+        gameBoard.randomLegalMove();
     }
     
     return {
