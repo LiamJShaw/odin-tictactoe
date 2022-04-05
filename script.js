@@ -1,12 +1,32 @@
 // Display Controller
 const displayController = (() => {
 
-    const newGameButton = document.querySelector(".newGame");
+    // Player v Player button
+    const newGameButtonPlayer = document.querySelector(".new-game-player");
 
-    newGameButton.addEventListener("click", () => {
+    newGameButtonPlayer.addEventListener("click", () => {
 
-        game.newGame();
-        newGameButton.style.display = "none";
+        const playerTwoNameInput = document.querySelector(".playerTwoName");
+        if (playerTwoNameInput.value === "CPU") {
+            playerTwoNameInput.value = "";
+        }
+
+        game.newGame("player");
+        newGameButtonPlayer.style.display = "none";
+        newGameButtonCPU.style.display = "none";
+    })
+
+    // Player v CPU button
+    const newGameButtonCPU = document.querySelector(".new-game-cpu");
+
+    newGameButtonCPU.addEventListener("click", () => {
+
+        const playerTwoNameInput = document.querySelector(".playerTwoName");
+        playerTwoNameInput.value = "CPU";
+
+        game.newGame("cpu");
+        newGameButtonPlayer.style.display = "none";
+        newGameButtonCPU.style.display = "none";
     })
 
     const updateScores = () => {
@@ -38,7 +58,8 @@ const displayController = (() => {
                 break;
         }
 
-        newGameButton.style.display = "block";
+        newGameButtonPlayer.style.display = "block";
+        newGameButtonCPU.style.display = "block";
         
     }
 
@@ -74,6 +95,10 @@ const playerFactory = (name, choice, turn, AI = false) => {
         AI = true;
     }
 
+    const unsetAI = () => {
+        AI = false;
+    }
+
     const isAI = () => {
         return AI;
     }
@@ -88,7 +113,9 @@ const playerFactory = (name, choice, turn, AI = false) => {
         updateName,
         getName,
         isAI,
-        setAI};
+        setAI,
+        unsetAI
+    };
 };
 
 // Gameboard module
@@ -224,7 +251,7 @@ const gameBoard = (() => {
         while (count < 9) {
 
             count++;
-            
+
             let randomNumber = Math.floor(Math.random() * 9);
 
             if (gameBoardArray[randomNumber] === "") {
@@ -250,9 +277,15 @@ const game = (() => {
     // TODO: Currently sets playerOne's turn to true but randomise/coin flip eventually
 
     const playerOne = playerFactory("Player 1", "X", true);
-    const playerTwo = playerFactory("Player 2", "O", false, true);
+    const playerTwo = playerFactory("Player 2", "O", false);
 
-    const newGame = () => {
+    const newGame = (type) => {
+
+        if (type === "cpu") {
+            playerTwo.setAI();
+        } else {
+            playerTwo.unsetAI();
+        }
 
         const playerOneNameInput = document.querySelector(".playerOneName");
         const playerTwoNameInput = document.querySelector(".playerTwoName");
@@ -263,10 +296,7 @@ const game = (() => {
     
         if (!(playerTwoNameInput.value === "")) { 
             playerTwo.updateName(playerTwoNameInput.value);
-        } else if (playerTwoNameInput.value === "ai") {
-            playerTwo.setAI();
-        }
-    
+        }     
         
         displayController.updateResult("clear");
         gameBoard.newBoard();

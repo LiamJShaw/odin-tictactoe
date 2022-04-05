@@ -9,48 +9,47 @@
     <script src="./script.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1 class="title">Tic Tac Toe</h1>
-    </header>
+    <div class="container">
 
-    <main>
-        <div class="container">
+        <header>
+            <h1 class="title">Tic Tac Toe</h1>
+        </header>
 
-            <div class="playerInfo">
-                <div class="playerOne">
-                    <input type="text" class="playerOneName" placeholder="Player One"></input>  
-                    <div class="playerOneScore disable-select">0</div>
+        <main>
+                <div class="playerInfo">
+                    <div class="playerOne">
+                        <input type="text" class="playerOneName" placeholder="Player One"></input>  
+                        <div class="playerOneScore disable-select">0</div>
+                    </div>
+        
+                    <div class="playerTwo">
+                        <input type="text" class="playerTwoName" placeholder="Player Two"></input>  
+                        <div class="playerTwoScore disable-select">0</div>
+                    </div>
                 </div>
-    
-                <div class="playerTwo">
-                    <input type="text" class="playerTwoName" placeholder="Player Two"></input>  
-                    <div class="playerTwoScore disable-select">0</div>
+
+                <div class="results">
+                    <h3 class="result"></h3>
                 </div>
-            </div>
 
-            <div class="results">
-                <h3 class="result"></h3>
-            </div>
+                <div class="buttons">
+                    <button class="new-game-player">Player v Player</button>
+                    <button class="new-game-cpu">Player v CPU</button>
+                </div>
 
-            <button class="newGame">New Game</button>
-    
-            <div id="gameBoard">
-                <!-- <div class="tile disable-select">X</div>
-                <div class="tile disable-select">O</div>
-                <div class="tile disable-select">X</div>
-                <div class="tile disable-select">O</div>
-                <div class="tile disable-select">X</div>
-                <div class="tile disable-select">O</div>
-                <div class="tile disable-select">X</div>
-                <div class="tile disable-select">O</div>
-                <div class="tile disable-select">X</div> -->
-            </div>
-        </div>
-    </main>
 
-    <footer>
-
-    </footer>
-    
+                <div id="gameBoard">
+                    <!-- <div class="tile disable-select">X</div>
+                    <div class="tile disable-select">O</div>
+                    <div class="tile disable-select">X</div>
+                    <div class="tile disable-select">O</div>
+                    <div class="tile disable-select">X</div>
+                    <div class="tile disable-select">O</div>
+                    <div class="tile disable-select">X</div>
+                    <div class="tile disable-select">O</div>
+                    <div class="tile disable-select">X</div> -->
+                </div>
+        </main>
+    </div>
 </body>
 </html>
